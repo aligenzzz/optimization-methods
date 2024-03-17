@@ -3,7 +3,6 @@ import numpy as np
 
 def matrix_with_modified_column_inversion(A: np.ndarray, A_inverted: np.ndarray, 
                                           x: np.ndarray, i: int) -> np.ndarray:
-    # Step 0
     n = A.shape[0]
     if i < 0 or i > n:
         raise Exception('Invalid index!')

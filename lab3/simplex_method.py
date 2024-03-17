@@ -1,7 +1,71 @@
 import numpy as np
 
 
-def second_phase(A: np.ndarray, c_T: np.ndarray, x_T: np.ndarray, B: list) -> np.ndarray:
+def first_phase(c: np.ndarray, A: np.ndarray, b: np.ndarray) -> tuple[np.ndarray, np.ndarray, list]:
+    m, n = A.shape
+    n_set = set(range(1, n + 1))
+
+    # Step 1
+    mask = (b < 0)
+    b[mask] *= -1
+    A[mask] *= -1
+
+    # Step 2
+    c_aux = np.concatenate((np.zeros(n), np.full(m, -1)))
+    A_aux = np.concatenate((A, np.eye(m)), axis=1)
+
+    # Step 3
+    x_aux = np.concatenate((np.zeros(n), b))
+    B_aux = [i + n for i in range(1, m + 1)]
+
+    # Step 4
+    x_aux, B_aux = second_phase(A_aux, c_aux, x_aux, B_aux)
+
+    # Step 5
+    if np.any(x_aux[-m:] != 0):
+        raise Exception('This task is incompatible!!!')
+
+    # Step 6
+    x = x_aux[:n]
+    B = B_aux
+
+    while True:
+        # Step 7
+        if set(B).issubset(n_set):
+            return x, A, B
+
+        # Step 8
+        j_k = max(B)
+        k = B.index(j_k)
+
+        # Step 9
+        j_list = list(n_set - set(B))
+        A_B = A_aux[:, np.array(B) - 1]
+        A_B_inverted = np.linalg.inv(A_B)
+
+        l = [(j, A_B_inverted.dot(A_aux[:, j - 1])) for j in j_list]
+
+        # Step 10
+        was = False
+        for j, l_j in l:
+            if l_j[k] != 0:
+                B[k] = j
+                was = True
+                break
+
+        # Step 11
+        if not was:
+            i = j_k - n - 1
+
+            A_aux = np.delete(A_aux, i, axis=0)
+            A = np.delete(A, i, axis=0)
+
+            b = np.delete(b, i)
+            B.remove(j_k)
+
+
+# from lab2
+def second_phase(A: np.ndarray, c_T: np.ndarray, x_T: np.ndarray, B: list) -> tuple[np.ndarray, np.ndarray]:
     was = False
 
     while True:
@@ -24,7 +88,7 @@ def second_phase(A: np.ndarray, c_T: np.ndarray, x_T: np.ndarray, B: list) -> np
 
         # Step 5
         if np.all(delta_T >= 0):
-            return x_T
+            return x_T, B
 
         # Step 6
         j0 = np.where(delta_T < 0)[0][0]
