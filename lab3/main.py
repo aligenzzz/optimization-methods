@@ -1,4 +1,4 @@
-from simplex_method import first_phase, second_phase
+from simplex_method import first_phase
 import numpy as np
 
 if __name__ == '__main__':
