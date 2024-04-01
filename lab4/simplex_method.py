@@ -60,6 +60,8 @@ def dual_simplex_method(c: np.ndarray, A: np.ndarray, b: np.ndarray, B: list) ->
         # Step 11
         B[k] = j_0
 
+        was = True
+
 
 # from lab 1
 def matrix_with_modified_column_inversion(A: np.ndarray, A_inverted: np.ndarray, 
