@@ -80,25 +80,33 @@ def potentials_method(a: np.ndarray, b: np.ndarray, c: np.ndarray) -> np.ndarray
         # Step 3
         corner_B = B.copy()
         
-        for i in range(n):
-            counter = 0
-            for j in range(m):
-                if (i, j) in corner_B:
-                    counter += 1
-            if counter <= 1:
+        while True:
+            general_counter = 0
+            
+            for i in range(n):
+                counter = 0
                 for j in range(m):
                     if (i, j) in corner_B:
-                        corner_B.remove((i, j))
+                        counter += 1
+                if counter <= 1:
+                    for j in range(m):
+                        if (i, j) in corner_B:
+                            corner_B.remove((i, j))
+                            general_counter += 1
 
-        for j in range(m):
-            counter = 0
-            for i in range(n):
-                if (i, j) in corner_B:
-                    counter += 1
-            if counter <= 1:
+            for j in range(m):
+                counter = 0
                 for i in range(n):
                     if (i, j) in corner_B:
-                        corner_B.remove((i, j))
+                        counter += 1
+                if counter <= 1:
+                    for i in range(n):
+                        if (i, j) in corner_B:
+                            corner_B.remove((i, j))
+                            general_counter += 1
+                            
+            if general_counter == 0:
+                break                
                         
         # Step 4
         marked_B = {position: None for position in corner_B}
