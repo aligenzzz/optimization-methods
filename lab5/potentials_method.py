@@ -1,9 +1,7 @@
 import numpy as np
 
 
-def first_phase(a: np.ndarray, b: np.ndarray) -> tuple[np.ndarray, list]:
-    n, m = a.shape[0], b.shape[0]
-
+def first_phase(a: np.ndarray, b: np.ndarray, c: np.ndarray) -> tuple[np.ndarray, list, np.ndarray, np.ndarray, np.ndarray]:
     # the balance condition
     if np.sum(a) != np.sum(b):
         difference = np.sum(a) - np.sum(b)
@@ -13,6 +11,8 @@ def first_phase(a: np.ndarray, b: np.ndarray) -> tuple[np.ndarray, list]:
         else:
             a = np.append(a, -difference)
             c = np.vstack((c, np.zeros((len(a), 1))))
+            
+    n, m = a.shape[0], b.shape[0]
 
     X = np.zeros((n, m))
     i, j = 0, 0
@@ -35,12 +35,12 @@ def first_phase(a: np.ndarray, b: np.ndarray) -> tuple[np.ndarray, list]:
         if np.all(a == 0) and np.all(b == 0):
             break
 
-    return X, B
+    return X, B, a, b, c
 
 
 def potentials_method(a: np.ndarray, b: np.ndarray, c: np.ndarray) -> np.ndarray:
     # Step 0
-    X, B = first_phase(a, b)
+    X, B, a, b, c = first_phase(a, b, c)
     n, m = a.shape[0], b.shape[0]
 
     while True:
