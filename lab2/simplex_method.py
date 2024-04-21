@@ -34,7 +34,7 @@ def second_phase(A: np.ndarray, c_T: np.ndarray, x_T: np.ndarray, B: list) -> np
         z = A_B_inverted.dot(A[:, j0])
         
         # Step 8
-        theta = np.array([x_T[j - 1] if z[i] > 0 else np.Inf for i, j in enumerate(B)])
+        theta = np.array([x_T[j - 1] / z[i] if z[i] > 0 else np.Inf for i, j in enumerate(B)])
         
         # Step 9
         theta0 = np.min(theta)
