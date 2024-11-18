@@ -23,8 +23,8 @@ def ford_fulkerson_algorithm(G: nx.DiGraph, start: str, end: str) -> int:
     # Step 0
     edges = deepcopy(G.edges())
     for edge in edges:
-        G.add_edge(edge[1], edge[0], capacity=0)
-        
+        if (edge[1], edge[0]) not in edges:
+            G.add_edge(edge[1], edge[0], capacity=0)     
     max_flow = 0
     
     # Step 1
@@ -32,6 +32,8 @@ def ford_fulkerson_algorithm(G: nx.DiGraph, start: str, end: str) -> int:
     
     # Step 2
     Gf = deepcopy(G)
+    for u, v in Gf.edges():
+        Gf[u][v]["capacity"] = G[u][v]["capacity"] - f[(u, v)] + f[(v, u)] 
     
     while True:
         # Step 3
@@ -58,10 +60,8 @@ def ford_fulkerson_algorithm(G: nx.DiGraph, start: str, end: str) -> int:
         # Step 7 + 8
         for u, v in path:
             f[(u, v)] += fP[(u, v)]
-            f[(v, u)] -= fP[(u, v)] 
             Gf[u][v]["capacity"] -= theta
-            Gf[v][u]["capacity"] += theta   
-             
+            Gf[v][u]["capacity"] += theta           
         max_flow += theta        
 
-    return max_flow
+    return max_flow, f
